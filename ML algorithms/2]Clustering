@@ -1,0 +1,17 @@
+//code
+import pandas as pd
+from sklearn.cluster import KMeans
+import numpy as np
+# Load the dataset
+df = pd.read_csv('Call_Center.csv')
+# Group the data by 'City' and calculate the total number of calls
+city_calls = df.groupby('City').size().reset_index(name='Total Calls')
+# Use the 'Total Calls' column as a feature for K-Means clustering
+X = city_calls[['Total Calls']]
+# Choose the number of clusters (k)
+k = 3 # You can change this to the desired number of clusters
+# Create and fit the K-Means model
+kmeans = KMeans(n_clusters=k, random_state=42)
+city_calls['Cluster'] = kmeans.fit_predict(X)
+# Print the clustering results
+print(city_calls)
