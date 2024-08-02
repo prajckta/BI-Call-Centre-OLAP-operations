@@ -1,0 +1,59 @@
+
+//code:
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.preprocessing import LabelEncoder
+file_path = 'C:/Users/Prajakta/Downloads/Call Center_Call Center.csv'
+df = pd.read_csv(file_path)
+# Display the first few rows of the DataFrame to check the data
+df.head()
+# Create a label encoder
+label_encoder = LabelEncoder()
+# Apply label encoding to 'Sentiment' column
+df['Sentiment'] = label_encoder.fit_transform(df['Sentiment'])
+# Display the updated DataFrame
+df.head()
+# Drop rows with missing values in the target variable
+df = df.dropna(subset=['Csat Score'])
+# Select features and target
+X = df[['Response Time', 'Call Duration In Minutes', 'Csat Score']] # Features
+y = df['Sentiment'] # Target
+y = label_encoder.fit_transform(y)
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+random_state=42)
+# Create and train the Naive Bayes model :
+naive_bayes_model = GaussianNB()
+naive_bayes_model.fit(X_train, y_train)
+# Make predictions
+y_pred = naive_bayes_model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred) * 100
+conf_matrix = confusion_matrix(y_test, y_pred)
+new_data = pd.DataFrame({
+'Response Time': [1],
+'Call Duration In Minutes': [25],
+'Csat Score': [10]
+})
+# Select features for prediction
+X_new = new_data[['Response Time', 'Call Duration In Minutes', 'Csat Score']]
+# Make predictions
+predicted_sentiment = naive_bayes_model.predict(X_new)
+# Convert numerical prediction back to original sentiment using
+inverse_transform
+predicted_sentiment_label =
+label_encoder.inverse_transform(predicted_sentiment)
+print(f'Accuracy: {accuracy:.2f}%')
+print(f'Confusion Matrix:\n{conf_matrix}')
+print(f"Predicted Sentiment: {predicted_sentiment_label[0]}")
+
+//output:
+Accuracy: 56.13%
+Confusion Matrix:
+[[394 210 0 210 0]
+[184 311 169 0 0]
+[ 0 101 81 0 101]
+[102 0 0 352 0]
+[ 0 0 0 0 240]]
+Predicted Sentiment: 4
