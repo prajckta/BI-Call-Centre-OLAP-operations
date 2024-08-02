@@ -1,0 +1,42 @@
+1. Slicing :
+SELECT *
+FROM call_center
+WHERE YEAR(call_timestamp) = 2020
+AND state = 'Texas';
+
+2. Dicing :
+SELECT *
+FROM call_center
+WHERE YEAR(call_timestamp) = 2020
+AND state IN ('Florida', 'Texas')
+AND reason IN ('Payments')
+AND sentiment IN('Positive' );
+
+3. Roll up :
+SELECT
+YEAR(call_timestamp) AS Year,
+MONTH(call_timestamp) AS Month,
+COUNT(id) AS MonthlyCalls
+FROM call_center
+WHERE YEAR(call_timestamp) = 2020
+GROUP BY Year, Month;
+
+4. Drill down :
+SELECT
+YEAR(call_timestamp) AS Year,
+MONTH(call_timestamp) AS Month,
+DAY(call_timestamp) AS Day,
+COUNT(id) AS DailyCalls
+FROM call_center
+WHERE YEAR(call_timestamp) = 2020 AND MONTH(call_timestamp) = 10
+GROUP BY Year, Month, Day;
+
+5. Pivot :
+SELECT
+SUM(CASE WHEN state = 'Florida' THEN 1 ELSE 0 END) AS
+FloridaCalls,
+SUM(CASE WHEN state = 'Texas' THEN 1 ELSE 0 END) AS TexasCalls,
+SUM(CASE WHEN state = 'Michigan' THEN 1 ELSE 0 END) AS
+MichiganCalls
+FROM call_center
+WHERE YEAR(call_timestamp) = 2020;
